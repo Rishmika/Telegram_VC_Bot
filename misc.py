@@ -1,3 +1,7 @@
+
+START_TEXT = "Hello Bro \n Send /help"
+
+
 HELP_TEXT = """__**මට Voice Chat එකේ Music Play කරන්න පුළුවන්**__
 
 **/skip** __දැනට වාදනය වන සංගීතය මඟ හරින්න.__
