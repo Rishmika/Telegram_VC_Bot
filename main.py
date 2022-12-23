@@ -30,6 +30,16 @@ OUTGOING_AUDIO_BITRATE_KBIT = BITRATE
 
 
 @app.on_message(
+    filters.command("start") 
+    & ~filters.private
+    & filters.chat(CHAT_ID)
+)
+async def help(_, message):
+    await message.reply_text(START_TEXT, quote=False)
+
+
+
+@app.on_message(
     filters.command("help") 
     & ~filters.private
     & filters.chat(CHAT_ID)
