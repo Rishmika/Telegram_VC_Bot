@@ -55,7 +55,7 @@ async def repo(_, message):
 async def joinvc(_, message, manual=False):
     if "call" in db:
         return await message.reply_text(
-            "__**Bot Is Already In The VC**__"
+            "__**මම Video Chat එකේ ඉන්නේ**__"
         )
     os.popen(f"cp etc/sample_input.raw {PLAYOUT_FILE}")
     vc = pytgcalls.GroupCallFactory(
@@ -79,11 +79,11 @@ async def joinvc(_, message, manual=False):
         except ChatAdminRequired:
             del db["call"]
             return await message.reply_text(
-                "Make me admin with message delete and vc manage permission"
+                "පණිවිඩ මකා දැමීම සහ vc කළමනාකරණය අවසරය සමඟ මාව පරිපාලක කරන්න"
             )
     await message.reply_text(
-        "__**Joined The Voice Chat.**__ \n\n**Note:** __If you can't hear anything,"
-        + " Send /leavevc and then /joinvc again.__"
+        "__**Voice Chat හා සම්බන්ධ විය.**__ \n\n**සටහන:** __ඔබට කිසිවක් ඇසෙන්නේ නැත්නම්,"
+         + " /leavevc යවා ඉන්පසු /joinvc යවන්න.__"
     )
     await message.delete()
 
@@ -98,7 +98,7 @@ async def leavevc(_, message):
         await db["call"].leave_current_group_call()
         await db["call"].stop()
         del db["call"]
-    await message.reply_text("__**Left The Voice Chat**__")
+    await message.reply_text("__**Voice Chat හැර ගියා**__")
     await message.delete()
 
 
@@ -112,7 +112,7 @@ async def volume_bot(_, message):
     if len(message.command) != 2:
         return await message.reply_text(usage)
     if "call" not in db:
-        return await message.reply_text("VC isn't started")
+        return await message.reply_text("VC පටන් අරන් නෑ බ්‍රෝ")
     vc = db["call"]
     volume = int(message.text.split(None, 1)[1])
     if (volume < 1) or (volume > 200):
@@ -121,7 +121,7 @@ async def volume_bot(_, message):
         await vc.set_my_volume(volume=volume)
     except ValueError:
         return await message.reply_text(usage)
-    await message.reply_text(f"**Volume Set To {volume}**")
+    await message.reply_text(f"**පරිමාව සකසන්න {volume}**")
 
 
 @app.on_message(
@@ -131,14 +131,14 @@ async def volume_bot(_, message):
 )
 async def pause_song_func(_, message):
     if "call" not in db:
-        return await message.reply_text("**VC isn't started**")
+        return await message.reply_text("**VC ආරම්භ කර නැත**")
     if "paused" in db:
         if db.get("paused"):
-            return await message.reply_text("**Already paused**")
+            return await message.reply_text("**දැනටමත් විරාම කර ඇත**")
     db["paused"] = True
     db["call"].pause_playout()
     await message.reply_text(
-        "**Paused The Music, Send `/resume` To Resume.**"
+        "**සංගීතය විරාම කර, නැවත ආරම්භ කිරීමට `/resume` යවන්න.**"
     )
 
 
@@ -149,14 +149,14 @@ async def pause_song_func(_, message):
 )
 async def resume_song(_, message):
     if "call" not in db:
-        return await message.reply_text("**VC isn't started**")
+        return await message.reply_text("**VC ආරම්භ කර නැත**")
     if "paused" in db:
         if not db.get("paused"):
-            return await message.reply_text("**Already playing**")
+            return await message.reply_text("**දැනටමත් සෙල්ලම් කරනවා**")
     db["paused"] = False
     db["call"].resume_playout()
     await message.reply_text(
-        "**Resumed, Send `/pause` To Pause The Music.**"
+        "**නැවත ආරම්භ කරන ලදී, සංගීතය විරාම කිරීමට `/pause` යවන්න.**"
     )
 
 
@@ -165,12 +165,12 @@ async def resume_song(_, message):
 )
 async def skip_func(_, message):
     if "queue" not in db:
-        await message.reply_text("**VC isn't started**")
+        await message.reply_text("**VC ආරම්භ කර නැත**")
         return await message.delete()
     queue = db["queue"]
     if queue.empty() and ("playlist" not in db or not db["playlist"]):
         await message.reply_text(
-            "__**Queue Is Empty, Just Like Your Life.**__"
+            "__**පෝලිම හිස්, ඔබේ ජීවිතය මෙන්.**__"
         )
         return await message.delete()
     db["skipped"] = True
@@ -199,7 +199,7 @@ __/play Reply_On_Audio__"""
                 return await message.reply_text(usage)
             if "call" not in db:
                 return await message.reply_text(
-                    "**Use /joinvc First!**"
+                    "**මුලින්ම /joinvc භාවිතා කරන්න!**"
                 )
             if message.reply_to_message:
                 if message.reply_to_message.audio:
@@ -207,7 +207,7 @@ __/play Reply_On_Audio__"""
                     song_name = message.reply_to_message.audio.title
                 else:
                     return await message.reply_text(
-                        "**Reply to a telegram audio file**"
+                        "**විදුලි පණිවුඩ ශ්‍රව්‍ය ගොනුවකට පිළිතුරු දෙන්න**"
                     )
             else:
                 text = message.text.split("\n")[0]
@@ -220,13 +220,13 @@ __/play Reply_On_Audio__"""
                     service = get_default_service()
                     song_name = " ".join(text)
                 if "http" in song_name or ".com" in song_name:
-                    return await message.reply("Links aren't supported.")
+                    return await message.reply("සබැඳි සහාය නොදක්වයි.")
 
             requested_by = message.from_user.first_name
             if "queue" not in db:
                 db["queue"] = asyncio.Queue()
             if not db["queue"].empty() or db.get("running"):
-                await message.reply_text("__**Added To Queue.__**")
+                await message.reply_text("__**පෝලිමට එකතු කරන ලදී.__**")
 
             await db["queue"].put(
                 {
@@ -256,7 +256,7 @@ async def queue_list(_, message):
     queue = db["queue"]
     if queue.empty():
         return await message.reply_text(
-            "__**Queue Is Empty, Just Like Your Life.**__"
+            "__**පෝලිම හිස්, ඔබේ ජීවිතය මෙන්.**__"
         )
     if (
         len(message.text.split()) > 1
@@ -318,14 +318,14 @@ async def start_queue(message=None):
 async def clear_queue(_, message):
     global db
     if "call" not in db:
-        return await message.reply_text("**VC isn't started**")
+        return await message.reply_text("**VC ආරම්භ කර නැත**")
     if ("queue" not in db or db["queue"].empty()) and (
         "playlist" not in db or not db["playlist"]
     ):
-        return await message.reply_text("**Queue Already is Empty**")
+        return await message.reply_text("**පෝලිම දැනටමත් හිස්ය**")
     db["playlist"] = False
     db["queue"] = asyncio.Queue()
-    await message.reply_text("**Successfully Cleared the Queue**")
+    await message.reply_text("**පෝලිම සාර්ථකව ඉවත් කරන ලදී**")
 
 
 @app.on_message(
@@ -348,7 +348,7 @@ Example:
 
         return await message.reply_text(usage)
     if "call" not in db:
-        return await message.reply_text("**Use /joinvc First!**")
+        return await message.reply_text("**මුලින්ම /joinvc භාවිතා කරන්න!**")
     if "playlist" not in db:
         db["playlist"] = False
     if "running" in db and db.get("running"):
@@ -374,7 +374,7 @@ Example:
         )
     if not redirected:
         db["running"] = True
-        await message.reply_text("**Playlist Started.**")
+        await message.reply_text("**ධාවන ලැයිස්තුව ආරම්භ විය.**")
         await start_queue(message)
 
 
