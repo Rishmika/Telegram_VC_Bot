@@ -1,10 +1,10 @@
 Pillow
-pytgcalls==3.0.0.dev22
+pytgcalls
 ffmpeg-python
 python-arq
-Pyrogram
+pyrogram
 TgCrypto
 youtube_dl
 aiofiles
 aiohttp
-python-dotenv
+
